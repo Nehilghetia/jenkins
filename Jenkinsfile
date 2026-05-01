@@ -1,48 +1,31 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven3'
+    }
+
     stages {
         stage('Build') {
             steps {
-                // Navigate to the "practical" directory where the pom.xml is located
                 dir('practical') {
-                    script {
-                        // Check if the Jenkins agent is Unix-based (Linux/Mac) or Windows
-                        if (isUnix()) {
-                            sh 'chmod +x mvnw'
-                            sh './mvnw clean compile'
-                        } else {
-                            bat 'mvnw.cmd clean compile'
-                        }
-                    }
+                    bat 'mvn clean compile'
                 }
             }
         }
-        
+
         stage('Test') {
             steps {
                 dir('practical') {
-                    script {
-                        if (isUnix()) {
-                            sh './mvnw test'
-                        } else {
-                            bat 'mvnw.cmd test'
-                        }
-                    }
+                    bat 'mvn test'
                 }
             }
         }
-        
+
         stage('Package') {
             steps {
                 dir('practical') {
-                    script {
-                        if (isUnix()) {
-                            sh './mvnw package -DskipTests'
-                        } else {
-                            bat 'mvnw.cmd package -DskipTests'
-                        }
-                    }
+                    bat 'mvn package'
                 }
             }
         }
